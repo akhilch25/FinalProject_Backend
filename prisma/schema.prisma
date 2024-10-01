@@ -1,0 +1,52 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// This schema defines the models for courses, employees, and the association between them.
+
+model Course {
+  id              Int              @id @default(autoincrement())
+  courseID        String           @unique
+  name            String
+  duration        String
+  difficulty_level String
+  employeeCourses EmployeeCourse[] // Relation to EmployeeCourse
+}
+
+model Employee {
+  id              Int              @id @default(autoincrement())
+  empID           String           @unique
+  name            String
+  designation     String
+  password        String
+  email           String   
+  mobile          String
+  performance_rate Float            @default(0)
+  employeeCourses EmployeeCourse[] // Relation to EmployeeCourse
+}
+
+model EmployeeCourse {
+  empID           String
+  courseID        String
+  completion_rate Float
+  
+  employee        Employee @relation(fields: [empID], references: [empID]) // Link to Employee
+  course          Course   @relation(fields: [courseID], references: [courseID]) // Link to Course
+
+  @@id([empID, courseID]) // Composite primary key from empID and courseID
+}
+
+
+
+
