@@ -39,7 +39,7 @@ model Employee {
 model EmployeeCourse {
   empID           String
   courseID        String
-  completion_rate Float
+  completion_rate Float             @default(0)
   
   employee        Employee @relation(fields: [empID], references: [empID]) // Link to Employee
   course          Course   @relation(fields: [courseID], references: [courseID]) // Link to Course
