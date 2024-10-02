@@ -13,6 +13,14 @@ const putCourse = async (req, res) => {
         res.status(500).json({ error: `Error adding courses: ${error.message}` });
     }
 };
- 
 
-module.exports={putCourse};
+const getCourses = async (req, res) => {
+    try {
+        const courses = await prisma.Course.findMany();
+        res.status(200).json(courses);
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching courses', error: error.message });
+    }
+};
+ 
+module.exports={putCourse, getCourses};

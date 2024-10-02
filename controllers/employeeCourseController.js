@@ -3,43 +3,60 @@ const prisma=new PrismaClient();
 
 const getDetails = async (req, res) => {
     try {
-        const employeeCourses = await prisma.EmployeeCourse.findMany();
+        const employeeCourses = await prisma.EmployeeCourse.findMany({
+            include:{
+                course:{
+                    select: {
+                        courseID: true,
+                        name: true,
+                    },
+                },
+                employee:{
+                    select:{
+                        name:true,
+                    },
+                },
+            },
+        });
         res.status(200).json(employeeCourses);
     } catch (error) {
         res.status(500).json({ message: 'Error fetching employees', error: error.message });
     }
 };
+
+const getEmployeeCourseById = async (req, res) => {
+    const { empID } = req.params; // Get empID from the request parameters
+    try {
+        const employee = await prisma.EmployeeCourse.findMany({
+            where: { empID: empID }, // Ensure this matches your database schema
+            include: {
+                course: true, // Include the Course details in the response
+              },
+        });
+
+        if (!employee) {
+            return res.status(404).json({ message: 'Employee not found' });
+        }
+
+        res.status(200).json(employee); // Return the employee data
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching course', error: error.message });
+    }
+};
+
 const putEmpCourseDetails = async (req, res) => {
     const { empID, courseID } = req.body;
  
     try {
-
-        // Check if the empID exists in the Employee table
-        const employeeExists = await prisma.Employee.findUnique({
-            where: { empID: empID },
-        });
-    
-        if (!employeeExists) {
-            return res.status(400).json({ error: "Employee does not exist." });
-        }
-    
-        // Check if the courseID exists in the Course table
-        const courseExists = await prisma.Course.findUnique({
-            where: { courseID: courseID },
-        });
-    
-        if (!courseExists) {
-            return res.status(400).json({ error: "Course does not exist." });
-        }
-        const newEmployeeCourse = await prisma.EmployeeCourse.create({
+         await prisma.EmployeeCourse.create({
             data: { empID, courseID },
         });
-        res.json(newEmployeeCourse);
+        
+        res.status(201).json({ message: 'Course assigned successfully'});
     } 
     catch (error) {
-        res.status(500).json({ error: `Error assigning courses: ${error.message}` });
+        res.status(500).json({ error: `Error assigning course: ${error.message}` });
     }
 };
- 
 
-module.exports={getDetails,putEmpCourseDetails};
+module.exports={getDetails,putEmpCourseDetails, getEmployeeCourseById};

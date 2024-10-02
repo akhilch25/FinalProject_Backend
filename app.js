@@ -2,6 +2,7 @@ const express = require('express');
 const authRoutes = require('./routes/authRoutes');
 const employeeCourseRoutes = require('./routes/employeeCourseRoutes')
 const courseRoutes = require('./routes/courseRoutes')
+const employeeRoutes = require('./routes/employeeRoutes')
 const app = express();
 const cors = require('cors');
 
@@ -16,6 +17,7 @@ app.use(express.json());
 app.use('/auth', authRoutes);
 app.use('/app', employeeCourseRoutes);
 app.use('/app',courseRoutes);
+app.use('/app',employeeRoutes)
 
 const PORT=process.env.PORT || 5000;
 app.listen(PORT,()=>{
