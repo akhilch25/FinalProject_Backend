@@ -91,4 +91,44 @@ const putEmpCourseDetails = async (req, res) => {
     }
 };
 
-module.exports={getDetails,putEmpCourseDetails, getEmployeeCourseById, putEmployeeCourseById};
+    const getCourseCount =async (req, res) => {
+        try {
+        const result = await prisma.$queryRaw`
+            SELECT "courseID", COUNT("courseID") AS "Course_Count" 
+            FROM "EmployeeCourse" 
+            GROUP BY "courseID"
+        `;
+        const serializedResult = result.map(row => ({
+            courseID: row.courseID,                // Assuming courseID is not a BigInt
+            Course_Count: Number(row.Course_Count) // Convert BigInt to Number
+          }));
+      
+          res.json(serializedResult); // Send the serialized result
+        } 
+        catch (error) {
+          res.status(500).json({ error: error.message });
+        }
+};
+
+const getCourseCompletion = async (req, res) => {
+    try {
+        const result = await prisma.$queryRaw`
+            SELECT "courseID", AVG("completion_rate") AS "Avg_Completion"
+            FROM "EmployeeCourse"
+            GROUP BY "courseID"
+        `;
+
+        // Serialize the result
+        const serializedResult = result.map(row => ({
+            courseID: row.courseID,                // courseID should be a string or compatible type
+            Avg_Completion: Number(row.Avg_Completion.toFixed(2)) // Convert to Number and format to 2 decimal places
+        }));
+
+        res.json(serializedResult); // Send the serialized result
+    } 
+    catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+module.exports={getDetails,putEmpCourseDetails, getEmployeeCourseById, putEmployeeCourseById,getCourseCount, getCourseCompletion};
