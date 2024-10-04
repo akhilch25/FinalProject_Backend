@@ -21,6 +21,7 @@ model Course {
   name            String
   duration        String
   difficulty_level String
+  learning_path   String           
   employeeCourses EmployeeCourse[] // Relation to EmployeeCourse
 }
 

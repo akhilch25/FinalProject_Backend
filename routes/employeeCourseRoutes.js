@@ -1,5 +1,5 @@
 const express = require('express');
-const { putEmpCourseDetails, getDetails, getEmployeeCourseById, putEmployeeCourseById, getCourseCount, getCourseCompletion } = require('../controllers/employeeCourseController');
+const { putEmpCourseDetails, getDetails, getEmployeeCourseById, putEmployeeCourseById, getCourseCount, getCourseCompletion} = require('../controllers/employeeCourseController');
 const router = express.Router();
 
 router.post('/employee-course', putEmpCourseDetails);
