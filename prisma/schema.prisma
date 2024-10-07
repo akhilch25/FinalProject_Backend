@@ -16,37 +16,55 @@ datasource db {
 // This schema defines the models for courses, employees, and the association between them.
 
 model Course {
-  id              Int              @id @default(autoincrement())
-  courseID        String           @unique
-  name            String
-  duration        String
-  difficulty_level String
-  learning_path   String           
-  employeeCourses EmployeeCourse[] // Relation to EmployeeCourse
+  id               Int              @id @default(autoincrement())
+  courseID         String           @unique // Unique identifier for the course
+  name             String           // Name of the course
+  duration         String           // Duration of the course
+  difficulty_level String           // Difficulty level of the course
+  learning_path    String           // Learning path associated with the course
+  employeeCourses  EmployeeCourse[] // Relation to EmployeeCourse
+  testDetails      TestDetails[]    // Relation to TestDetails
 }
 
 model Employee {
-  id              Int              @id @default(autoincrement())
-  empID           String           @unique
-  name            String
-  designation     String
-  password        String
-  email           String   
-  mobile          String
-  performance_rate Float            @default(0)
-  employeeCourses EmployeeCourse[] // Relation to EmployeeCourse
+  id               Int              @id @default(autoincrement())
+  empID            String           @unique // Unique identifier for the employee
+  name             String           // Name of the employee
+  designation      String           // Designation of the employee
+  password         String           // Password for the employee
+  email            String           // Email address of the employee
+  mobile           String           // Mobile number of the employee
+  performance_rate Float            @default(0) // Performance rate of the employee
+  employeeCourses  EmployeeCourse[] // Relation to EmployeeCourse
 }
 
 model EmployeeCourse {
   empID           String
   courseID        String
-  completion_rate Float             @default(0)
+  completion_rate Float             @default(0) // Completion rate for the course
   
   employee        Employee @relation(fields: [empID], references: [empID]) // Link to Employee
   course          Course   @relation(fields: [courseID], references: [courseID]) // Link to Course
 
   @@id([empID, courseID]) // Composite primary key from empID and courseID
 }
+
+model TestDetails {
+  id          Int      @id @default(autoincrement()) 
+  courseID    String   @unique // Foreign key to the Course table, must match courseID type in Course model
+  testData    Json     // JSON field to store questions and options
+  
+  course      Course    @relation(fields: [courseID], references: [courseID]) // Relation to Course
+}
+
+model TestResults {
+    id        Int      @id @default(autoincrement())
+    courseID  String
+    score     Float
+    passed    Boolean
+}
+
+
 
 
 
