@@ -59,6 +59,7 @@ model TestDetails {
 
 model TestResults {
     id        Int      @id @default(autoincrement())
+    empID     String
     courseID  String
     score     Float
     passed    Boolean

@@ -3,8 +3,8 @@ const prisma = new PrismaClient();
 
 // Route to handle quiz submission
 const putAnswers = async (req, res) => {
-    const { courseID, answers } = req.body;
-
+    const { empID,courseID, answers } = req.body;
+    
     try {
         // Fetch the correct answers from the database
         const testDetails = await prisma.testDetails.findUnique({
@@ -23,12 +23,13 @@ const putAnswers = async (req, res) => {
         // Save the score to the database or perform any additional logic
         const percentageScore = (correctCount / totalQuestions) * 100;
 
-        // Optionally, save the score to a table for results (you would need to create this table)
+        // Save the score to a table for results 
         await prisma.testResults.create({
             data: {
                 courseID,
                 score: percentageScore,
                 passed: percentageScore >= 80, // Assuming 80% is passing
+                empID,
             },
         });
 
