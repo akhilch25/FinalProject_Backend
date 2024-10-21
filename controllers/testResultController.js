@@ -40,4 +40,31 @@ const putAnswers = async (req, res) => {
     }
 };
 
-module.exports = {putAnswers};
+const getResults = async (req, res) => {
+    const { empID, courseID } = req.params;
+  
+    try {
+      // Fetch all test results for the employee
+      const testResults = await prismaClient.testResults.findMany({
+        where: {
+          empID: empID,
+          courseID: courseID
+        },
+        select: {
+          passed: true
+        }
+      });
+  
+      if (testResults.length === 0) {
+        return res.status(404).json({ message: 'No test results found for the given employee' });
+      }
+  
+      // Send the test results
+      res.json(testResults);
+    } catch (error) {
+      console.error('Error fetching test results:', error);
+      res.status(500).json({ message: 'Error fetching test results' });
+    }
+  };
+
+module.exports = {putAnswers, getResults};
